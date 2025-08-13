@@ -1,0 +1,23 @@
+{
+  "name": "Manuel de Prélèvements",
+  "short_name": "Prélèvements",
+  "description": "Manuel de prélèvements de l'Hôpital d'Enfants Béchir Hamza de Tunis.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f7f9",
+  "theme_color": "#0077c2",
+  "icons": [
+    {
+      "src": "assets/icons/icon-192x192.png?v=1",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-512x512.png?v=1",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
