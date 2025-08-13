@@ -75,7 +75,7 @@ document.addEventListener('alpine:init', () => {
                 //}
                     //window.cleanupZoomController();
             }
-            
+
             if (!isBackAction && this.currentView !== view) {
                 this.historyStack.push(this.currentView);
             }
@@ -97,7 +97,7 @@ document.addEventListener('alpine:init', () => {
 
         goBack() {
             const previousView = this.historyStack.pop() || 'home';
-            this.navigateToView(previousView, true); 
+            this.navigateToView(previousView, true);
             this.destroyPanzoom();
         },
 
@@ -229,7 +229,7 @@ document.addEventListener('alpine:init', () => {
                     }
                 });
             }, {
-                root: document.getElementById('pages-container'),
+                root: document.getElementById('viewer-wrapper'),
                 rootMargin: '1200px 0px 1200px 0px' // Increased margin to load even more images ahead of time
             });
 
@@ -241,26 +241,31 @@ document.addEventListener('alpine:init', () => {
                 this.panzoomInstance.destroy();
             }
             const elem = document.getElementById('zoom-container');
-        
+
             if (elem) {
                 this.panzoomInstance = Panzoom(elem, {
                     maxScale: 6,
                     minScale: 1,
                     canvas: true,
                     contain: 'outside',
-        
+                    roundPixels : true,
                     disableYAxis: true,
                     touchAction: "pan-y",
-        
+
                     // This ensures that horizontal panning only works when zoomed in.
                     panOnlyWhenZoomed: true
-        
+
                 }); // No other complex options are needed.
-        
+
                 // This is for desktop mouse wheel zoom.
                 const viewerWrapper = document.querySelector('.viewer-wrapper');
                 if (viewerWrapper) {
-                    viewerWrapper.addEventListener('wheel', this.panzoomInstance.zoomWithWheel);
+                    viewerWrapper.addEventListener('wheel', (event) => {
+                        if (event.ctrlKey || event.metaKey) {
+                            event.preventDefault();
+                            this.panzoomInstance.zoomWithWheel(event);
+                        }
+                    });
                 }
             }
         },

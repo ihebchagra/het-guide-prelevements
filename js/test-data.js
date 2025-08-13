@@ -294,5 +294,34 @@ const testsData = {
     { "name": "West Nile Virus : PCR (WNV)", "page": 302, "u": false, "s": true },
     { "name": "West nile Virus: Sérologie IgM ET IgG (WNV)", "page": 330, "u": false, "s": true },
     { "name": "Western Blot VIH", "page": 331, "u": false, "s": true }
-]
+],
+    "Annexes": [
+        { "name": "Annexe 1: Fiche de non-conformité", "page": 334 },
+        { "name": "Annexe 2: Fiche des réclamations", "page": 336 },
+        { "name": "Annexe B1: Fiche de renseignements : Activité de la G6PD", "page": 337 },
+        { "name": "Annexe B2: Fiche de renseignement : Mucoviscidose", "page": 338 },
+        { "name": "Annexe B3: Fiche de renseignements : Etude de l’Hémoglobine", "page": 340 },
+        { "name": "Annexe B4: Demande d’électrophorèse des protéines sériques", "page": 341 },
+        { "name": "Annexe B5: Demande de dosage de la Procalcitonine (PCT)", "page": 342 },
+        { "name": "Annexe B6: Demande d’examens d’hormonologie", "page": 343 },
+        { "name": "Annexe H1: Bilan de thrombose", "page": 344 },
+        { "name": "Annexe H2: Etude de l’hémostase", "page": 346 },
+        { "name": "Annexe H3: Activité anti-Xa", "page": 347 },
+        { "name": "Annexe H4: Cytométrie en flux", "page": 348 },
+        { "name": "Annexe H5: Demande de myélogramme", "page": 349 },
+        { "name": "Annexe H6: Demande de recherche des agglutinines irrégulières (RAI)", "page": 350 },
+        { "name": "Annexe M1: Fiche de renseignements : Coqueluche", "page": 351 },
+        { "name": "Annexe M2: Fiche de renseignements : Hépatites Virales", "page": 352 },
+        { "name": "Annexe M3: Fiche de renseignements : Embryofoetopathies ou IMF", "page": 353 },
+        { "name": "Annexe M4: Fiche de renseignements : Dosage de l’interferon gamma(IGRA)", "page": 354 },
+        { "name": "Annexe M5: Fiche de renseignements : méningite et méningo-encéphalite virale", "page": 355 },
+        { "name": "Annexe M6: Fiche de renseignements : Recherche des virus et bactéries respiratoires par PCR Multiplexe", "page": 356 },
+        { "name": "Annexe M7: Fiche de renseignements : ECBU Examen cytobactériologique des urines", "page": 357 },
+        { "name": "Annexe M8: Fiche de Renseignements Cliniques Recherche des Mycobactéries", "page": 358 },
+        { "name": "Annexe M9: Feuille de recueil de données / Tunisie (Etude MENINGSTOP)", "page": 359 },
+        { "name": "Annexe M10: Fiche de renseignements Détection par PCR du SARS-CoV-2", "page": 361 },
+        { "name": "Annexe M11: Modes de recueil des urines", "page": 362 },
+        { "name": "Annexe M12: Recommandations pour le prélèvement des hémocultures", "page": 363 },
+        { "name": "Annexe M13: Volume de sang à prélever pour les hémocultures pédiatriques", "page": 364 }
+    ]
 };

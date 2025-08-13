@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
     <title>Manuel de Prélèvements</title>
 
-    <?php $version = "1.66"; ?>
+    <?php $version = "1.69"; ?>
 
     <link rel="manifest" href="/manifest.webmanifest?v=<?php echo $version; ?>">
     <meta name="theme-color" content="#0077c2">
@@ -73,6 +73,7 @@
                     <a @click.prevent="showSection('Examens biochimiques')" href="#" class="nav-card"><h3>🔬 Examens biochimiques</h3><p>Biochimie, hormonologie...</p></a>
                     <a @click.prevent="showSection('Examens hématologiques')" href="#" class="nav-card"><h3>🩸 Examens hématologiques</h3><p>Cytologie, hémostase...</p></a>
                     <a @click.prevent="showSection('Examens microbiologiques')" href="#" class="nav-card"><h3>🦠 Examens microbiologiques</h3><p>Bactériologie, virologie...</p></a>
+                    <a @click.prevent="showSection('Annexes')" href="#" class="nav-card"><h3>📋 Annexes</h3><p>Fiches de renseignements...</p></a>
                 </nav>
             </div>
 
@@ -117,7 +118,7 @@
                         <?php
                         // The exact aspect ratios you provided
                         $aspect_ratio_landscape = '16 / 9';
-                        $aspect_ratio_portrait = '9 / 16';
+                        $aspect_ratio_portrait = '1 / 1.41';
 
                         function get_aspect_ratio_string($page_num) {
                             global $aspect_ratio_portrait, $aspect_ratio_landscape;

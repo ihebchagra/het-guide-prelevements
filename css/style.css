@@ -167,9 +167,6 @@ progress::-moz-progress-bar { background-color: var(--primary-color); }
     transform-origin: 0 0;
 }
 
-#zoom-container::-webkit-scrollbar {
-    display: none;
-}
 
 #pages-container {
     margin: 0 auto;
