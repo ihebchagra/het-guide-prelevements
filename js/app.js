@@ -11,7 +11,6 @@ document.addEventListener('alpine:init', () => {
         loadingProgress : 0,
         db: null,
         currentView: 'home',
-        historyStack: ['home'],
         searchTerm: '',
         lastSearchedTerm: '',
         searchResults: [],
@@ -26,8 +25,29 @@ document.addEventListener('alpine:init', () => {
             // Check localStorage to see if the user is already authenticated
             if (localStorage.getItem('guideAuth') === 'true') {
                 this.isAuthenticated = true;
+                history.replaceState({ view: 'home' }, '', '#home');
                 this.initDatabase();
             }
+
+            // Add a listener for the browser's back/forward button (and mobile back gesture)
+            window.addEventListener('popstate', (event) => {
+                // Ignore popstate events if not authenticated
+                if (!this.isAuthenticated) return;
+
+                if (event.state && event.state.view) {
+
+                    if(event.state.view === 'search') {
+                        this.searchTitle = event.state.title;
+                        this.lastSearchedTerm = event.state.lastTerm;
+                    }
+
+                    this.navigateToView(event.state.view, true);
+                } else {
+                    // The state is null, which can happen if the user navigates
+                    // back past the first entry. In this case, go to the home view.
+                    this.navigateToView('home', true);
+                }
+            });
         },
 
         handleLogin() {
@@ -37,6 +57,10 @@ document.addEventListener('alpine:init', () => {
                 this.loginError = '';
                 // Remember this choice in localStorage for future visits
                 localStorage.setItem('guideAuth', 'true');
+
+                // On successful login, set the initial history state
+                history.replaceState({ view: 'home' }, '', '#home');
+
                 // Now that we're logged in, start loading the database
                 this.initDatabase();
             } else {
@@ -68,41 +92,46 @@ document.addEventListener('alpine:init', () => {
             if (progress !== undefined) this.loadingProgress = progress;
         },
 
+        // --- MODIFIED ---
         navigateToView(view, isBackAction = false) {
+            // When leaving the viewer, destroy the panzoom instance to clean up
             if (this.currentView === 'viewer' && view !== 'viewer') {
-                // if (typeof window.cleanupZoomController === 'function') {
-                //    window.cleanupZoomController();
-                //}
-                    //window.cleanupZoomController();
+                this.destroyPanzoom();
             }
 
+            // If this is a forward navigation, push a new state to the browser history.
+            // We don't do this for back/forward actions because the state is already
+            // being managed by the browser.
             if (!isBackAction && this.currentView !== view) {
-                this.historyStack.push(this.currentView);
+                const state = { view: view };
+                // Add any extra context needed to restore the view later
+                if (view === 'search') {
+                    state.title = this.searchTitle;
+                    state.lastTerm = this.lastSearchedTerm;
+                }
+                // Push the state, an empty title, and a hash URL for the view
+                history.pushState(state, '', `#${view}`);
             }
 
             this.currentView = view;
             window.scrollTo(0, 0);
+
+            // Use $nextTick to ensure DOM elements for the new view are available
+            // before trying to initialize them (e.g., panzoom on the viewer).
             this.$nextTick(() => {
-                this.initPanzoom();
+                if (this.currentView === 'viewer') {
+                    this.initPanzoom();
+                }
             });
-
-            // **INITIALIZATION STEP**: If the new view is 'viewer'...
-            //if (view === 'viewer') {
-                // Use $nextTick to ensure the viewer DOM elements are present before initializing.
-                //this.$nextTick(() => {
-                //    initializeZoomController();
-                //});
-            //}
         },
 
+        // --- MODIFIED ---
         goBack() {
-            const previousView = this.historyStack.pop() || 'home';
-            this.navigateToView(previousView, true);
-            this.destroyPanzoom();
+            // Simply trigger the browser's back functionality.
+            // The 'popstate' event listener will handle the actual view change.
+            history.back();
         },
 
-        // The navigateToPage function remains the same as the previous version.
-        // It correctly calls navigateToView('viewer'), which now handles initialization.
         navigateToPage(pageNumber) {
             this.navigateToView('viewer');
             this.$nextTick(() => {
