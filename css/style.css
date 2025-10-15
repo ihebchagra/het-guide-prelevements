@@ -140,7 +140,6 @@ progress::-moz-progress-bar { background-color: var(--primary-color); }
     height: 100%;
     z-index: 100;
     overflow: hidden;
-    touch-action: pan-y;
 }
 
 .viewer-back-button {
@@ -162,8 +161,6 @@ progress::-moz-progress-bar { background-color: var(--primary-color); }
     height: 100%;
     overflow: auto;
     background: #e9eef1;
-    -webkit-overflow-scrolling: touch;
-    will-change: transform;
     transform-origin: 0 0;
 }
 
@@ -262,4 +259,251 @@ progress::-moz-progress-bar { background-color: var(--primary-color); }
     color: var(--accent-color);
     font-size: 0.9rem;
     margin-top: 0.5rem;
+}
+
+.share-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.qr-code-section,
+.link-section {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.qr-code-section h3,
+.link-section h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+    font-size: 1.25rem;
+}
+
+.qr-code-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+}
+
+.qr-code-image {
+    max-width: 250px;
+    width: 100%;
+    height: auto;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.qr-description {
+    margin-top: 1rem;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.link-copy-wrapper {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.link-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: 'Courier New', monospace;
+    background: var(--bg-main);
+    color: var(--text-primary);
+}
+
+.link-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background: white;
+}
+
+.copy-button {
+    padding: 0.75rem 1.5rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.copy-button:hover {
+    background: var(--primary-color-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 119, 194, 0.3);
+}
+
+.copy-button:active {
+    transform: translateY(0);
+}
+
+.copy-button.copied {
+    background: #28a745;
+}
+
+.success-message {
+    margin-top: 1rem;
+    color: #28a745;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+/* ===== PWA Installation View Styles ===== */
+.pwa-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.pwa-section {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.pwa-section.pwa-success {
+    background: #f0f9f4;
+    border: 2px solid #28a745;
+}
+
+.pwa-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.pwa-section h3 {
+    margin: 1rem 0;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+}
+
+.pwa-section p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.install-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.install-button:hover {
+    background: var(--primary-color-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 119, 194, 0.3);
+}
+
+.install-button:active {
+    transform: translateY(0);
+}
+
+.install-steps {
+    text-align: left;
+    margin: 1.5rem auto;
+    max-width: 400px;
+    padding-left: 1.5rem;
+}
+
+.install-steps li {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+}
+
+.install-steps strong {
+    color: var(--primary-color);
+}
+
+.step-icon {
+    display: inline-block;
+    margin-left: 0.5rem;
+    color: var(--primary-color);
+    vertical-align: middle;
+}
+
+.inline-link {
+    display: block;
+    background: var(--bg-main);
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    word-break: break-all;
+    margin: 0.5rem 0 1rem 0;
+    border: 1px solid var(--border-color);
+}
+
+.copy-button-secondary {
+    margin-top: 1rem;
+    padding: 0.75rem 1.5rem;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.copy-button-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .link-copy-wrapper {
+        flex-direction: column;
+    }
+    
+    .link-input {
+        min-width: 100%;
+    }
+    
+    .copy-button {
+        width: 100%;
+    }
+    
+    .qr-code-image {
+        max-width: 200px;
+    }
+}
+/* Add to the end of your style.css */
+.nav-card-success {
+    background: linear-gradient(135deg, #f0f9f4 0%, #ffffff 100%);
+    border-left: 4px solid #28a745;
+}
+
+.nav-card-success h3 {
+    color: #28a745;
 }

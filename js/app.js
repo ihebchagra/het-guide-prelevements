@@ -1,6 +1,9 @@
 document.addEventListener('alpine:init', () => {
 
     Alpine.data('guideApp', () => ({
+        // --- CONFIGURATION ---
+        authEnabled: false, // Set to false to disable authentication
+        
         // --- STATE ---
         isAuthenticated: false,
         passwordInput: '',
@@ -19,15 +22,30 @@ document.addEventListener('alpine:init', () => {
         searchTitle: 'Recherche',
         lazyLoadObserver: null,
         allTests: Object.values(testsData).flat(),
-        panzoomInstance: null,
+        
+        // New properties for share and PWA
+        shareableUrl: window.location.href.split('#')[0], // Clean URL without hash
+        linkCopied: false,
+        pwaStatus: 'checking',
+        deferredPrompt: null,
 
         init() {
-            // Check localStorage to see if the user is already authenticated
-            if (localStorage.getItem('guideAuth') === 'true') {
+            // If auth is disabled, automatically authenticate
+            if (!this.authEnabled) {
                 this.isAuthenticated = true;
                 history.replaceState({ view: 'home' }, '', '#home');
                 this.initDatabase();
+            } else {
+                // Check localStorage to see if the user is already authenticated
+                if (localStorage.getItem('guideAuth') === 'true') {
+                    this.isAuthenticated = true;
+                    history.replaceState({ view: 'home' }, '', '#home');
+                    this.initDatabase();
+                }
             }
+
+            // Initialize PWA functionality
+            this.initPWA();
 
             // Add a listener for the browser's back/forward button (and mobile back gesture)
             window.addEventListener('popstate', (event) => {
@@ -43,8 +61,6 @@ document.addEventListener('alpine:init', () => {
 
                     this.navigateToView(event.state.view, true);
                 } else {
-                    // The state is null, which can happen if the user navigates
-                    // back past the first entry. In this case, go to the home view.
                     this.navigateToView('home', true);
                 }
             });
@@ -55,8 +71,10 @@ document.addEventListener('alpine:init', () => {
                 // Password is correct
                 this.isAuthenticated = true;
                 this.loginError = '';
-                // Remember this choice in localStorage for future visits
-                localStorage.setItem('guideAuth', 'true');
+                // Remember this choice in localStorage for future visits (only if auth is enabled)
+                if (this.authEnabled) {
+                    localStorage.setItem('guideAuth', 'true');
+                }
 
                 // On successful login, set the initial history state
                 history.replaceState({ view: 'home' }, '', '#home');
@@ -69,6 +87,7 @@ document.addEventListener('alpine:init', () => {
                 this.passwordInput = '';
             }
         },
+        
         async initDatabase() {
             try {
                 this.updateStatus("Initialisation...", 5);
@@ -92,43 +111,23 @@ document.addEventListener('alpine:init', () => {
             if (progress !== undefined) this.loadingProgress = progress;
         },
 
-        // --- MODIFIED ---
+        // --- NAVIGATION ---
         navigateToView(view, isBackAction = false) {
-            // When leaving the viewer, destroy the panzoom instance to clean up
-            if (this.currentView === 'viewer' && view !== 'viewer') {
-                this.destroyPanzoom();
-            }
 
-            // If this is a forward navigation, push a new state to the browser history.
-            // We don't do this for back/forward actions because the state is already
-            // being managed by the browser.
             if (!isBackAction && this.currentView !== view) {
                 const state = { view: view };
-                // Add any extra context needed to restore the view later
                 if (view === 'search') {
                     state.title = this.searchTitle;
                     state.lastTerm = this.lastSearchedTerm;
                 }
-                // Push the state, an empty title, and a hash URL for the view
                 history.pushState(state, '', `#${view}`);
             }
 
             this.currentView = view;
             window.scrollTo(0, 0);
-
-            // Use $nextTick to ensure DOM elements for the new view are available
-            // before trying to initialize them (e.g., panzoom on the viewer).
-            this.$nextTick(() => {
-                if (this.currentView === 'viewer') {
-                    this.initPanzoom();
-                }
-            });
         },
 
-        // --- MODIFIED ---
         goBack() {
-            // Simply trigger the browser's back functionality.
-            // The 'popstate' event listener will handle the actual view change.
             history.back();
         },
 
@@ -265,50 +264,121 @@ document.addEventListener('alpine:init', () => {
             images.forEach(img => this.lazyLoadObserver.observe(img));
         },
 
-        initPanzoom() {
-            if (this.panzoomInstance) {
-                this.panzoomInstance.destroy();
-            }
-            const elem = document.getElementById('zoom-container');
-
-            if (elem) {
-                this.panzoomInstance = Panzoom(elem, {
-                    maxScale: 6,
-                    minScale: 1,
-                    canvas: true,
-                    contain: 'outside',
-                    roundPixels : true,
-                    disableYAxis: true,
-                    touchAction: "pan-y",
-
-                    // This ensures that horizontal panning only works when zoomed in.
-                    panOnlyWhenZoomed: true
-
-                }); // No other complex options are needed.
-
-                // This is for desktop mouse wheel zoom.
-                const viewerWrapper = document.querySelector('.viewer-wrapper');
-                if (viewerWrapper) {
-                    viewerWrapper.addEventListener('wheel', (event) => {
-                        if (event.ctrlKey || event.metaKey) {
-                            event.preventDefault();
-                            this.panzoomInstance.zoomWithWheel(event);
-                        }
-                    });
-                }
+        // --- NEW METHODS FOR SHARE & PWA ---
+        
+        // Copy link to clipboard
+        copyLink() {
+            const url = this.shareableUrl;
+            
+            // Modern clipboard API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(() => {
+                    this.linkCopied = true;
+                    setTimeout(() => {
+                        this.linkCopied = false;
+                    }, 3000);
+                }).catch(err => {
+                    console.error('Failed to copy:', err);
+                    this.fallbackCopy(url);
+                });
+            } else {
+                // Fallback for older browsers
+                this.fallbackCopy(url);
             }
         },
-
-        destroyPanzoom() {
-            if (this.panzoomInstance) {
-                const viewerWrapper = document.querySelector('.viewer-wrapper');
-                if (viewerWrapper) {
-                    // Important to remove event listeners to prevent memory leaks
-                    viewerWrapper.removeEventListener('wheel', this.panzoomInstance.zoomWithWheel);
-                }
-                this.panzoomInstance.destroy();
-                this.panzoomInstance = null;
+        
+        // Fallback copy method
+        fallbackCopy(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-9999px';
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                this.linkCopied = true;
+                setTimeout(() => {
+                    this.linkCopied = false;
+                }, 3000);
+            } catch (err) {
+                console.error('Fallback copy failed:', err);
+                alert('Impossible de copier automatiquement. Veuillez copier manuellement.');
             }
+            
+            document.body.removeChild(textArea);
+        },
+        
+        // Initialize PWA detection
+        initPWA() {
+            // Check if already installed
+            if (window.matchMedia('(display-mode: standalone)').matches || 
+                window.navigator.standalone === true) {
+                this.pwaStatus = 'installed';
+                return;
+            }
+            
+            // Detect platform
+            const userAgent = navigator.userAgent.toLowerCase();
+            const isIOS = /iphone|ipad|ipod/.test(userAgent);
+            const isAndroid = /android/.test(userAgent);
+            const isChrome = /chrome/.test(userAgent) && !/edg/.test(userAgent);
+            const isSafari = /safari/.test(userAgent) && !/chrome/.test(userAgent);
+            
+            if (isIOS && isSafari) {
+                this.pwaStatus = 'ios';
+            } else if (isAndroid && !isChrome) {
+                this.pwaStatus = 'other-android';
+            } else if (isAndroid && isChrome) {
+                this.pwaStatus = 'checking';
+                // Will be updated by beforeinstallprompt event
+            } else {
+                this.pwaStatus = 'desktop';
+            }
+            
+            // Listen for install prompt (Chrome/Edge)
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                this.deferredPrompt = e;
+                this.pwaStatus = 'installable';
+            });
+            
+            // Listen for successful installation
+            window.addEventListener('appinstalled', () => {
+                this.pwaStatus = 'installed';
+                this.deferredPrompt = null;
+            });
+            
+            // If no prompt after 1 second and still checking, show desktop
+            setTimeout(() => {
+                if (this.pwaStatus === 'checking') {
+                    this.pwaStatus = 'desktop';
+                }
+            }, 1000);
+        },
+        
+        // Install PWA
+        async installPWA() {
+            if (!this.deferredPrompt) {
+                return;
+            }
+            
+            // Show the install prompt
+            this.deferredPrompt.prompt();
+            
+            // Wait for the user's response
+            const { outcome } = await this.deferredPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                console.log('User accepted the install prompt');
+            } else {
+                console.log('User dismissed the install prompt');
+            }
+            
+            // Clear the deferredPrompt
+            this.deferredPrompt = null;
         }
+
     }));
 });

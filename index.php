@@ -2,10 +2,10 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=6.0, minimum-scale=1.0">
     <title>Manuel de Prélèvements</title>
 
-    <?php $version = "1.69"; ?>
+    <?php $version = "1.72"; ?>
 
     <link rel="manifest" href="/manifest.webmanifest?v=<?php echo $version; ?>">
     <meta name="theme-color" content="#0077c2">
@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="css/style.css?v=<?php echo $version; ?>">
     <script src="//unpkg.com/alpinejs" defer></script>
     <script src="js/sql-wasm.js"></script>
-    <script src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
 </head>
 <body>
 
@@ -74,6 +73,17 @@
                     <a @click.prevent="showSection('Examens hématologiques')" href="#" class="nav-card"><h3>🩸 Examens hématologiques</h3><p>Cytologie, hémostase...</p></a>
                     <a @click.prevent="showSection('Examens microbiologiques')" href="#" class="nav-card"><h3>🦠 Examens microbiologiques</h3><p>Bactériologie, virologie...</p></a>
                     <a @click.prevent="showSection('Annexes')" href="#" class="nav-card"><h3>📋 Annexes</h3><p>Fiches de renseignements...</p></a>
+                    <a href="https://drive.google.com/file/d/1RtY1SPUsOLkOZIxP5VSDtDtX3Y25VG2g/view?usp=sharing" class="nav-card"><h3>📘 Télécharger en format PDF</h3><p>Pour l'utilisation hors-ligne</p></a>
+                    <a @click.prevent="navigateToView('share')" href="#" class="nav-card"><h3>🔗 Partager ce site</h3><p>Lien ou QR code</p></a>
+                    <a 
+                        @click.prevent="navigateToView('pwa')" 
+                        href="#" 
+                        class="nav-card"
+                        x-show="pwaStatus !== 'installed'"
+                    >
+                        <h3>📥 Télécharger l'application</h3>
+                        <p>Installer hors ligne...</p>
+                    </a>
                 </nav>
             </div>
 
@@ -145,6 +155,127 @@
                         }
                         ?>
                     </div>
+            </div>
+        </div>
+        <!-- ===== Share View (QR Code & Link) ===== -->
+        <div x-show="currentView === 'share'" class="view-content" x-transition>
+            <header class="view-header">
+                <button class="back-button" @click="goBack()">‹ Retour</button>
+                <h2>Partager ce site</h2>
+            </header>
+            
+            <div class="share-container">
+                <div class="qr-code-section">
+                    <h3>Scanner le QR Code</h3>
+                    <div class="qr-code-wrapper">
+                        <img src="assets/qr-code.webp" alt="QR Code du site" class="qr-code-image">
+                    </div>
+                    <p class="qr-description">Scannez ce code pour accéder au site</p>
+                </div>
+                
+                <div class="link-section">
+                    <h3>Ou copier le lien</h3>
+                    <div class="link-copy-wrapper">
+                        <input 
+                            type="text" 
+                            id="shareable-link" 
+                            :value="shareableUrl" 
+                            readonly 
+                            class="link-input"
+                            @click="$event.target.select()"
+                        >
+                        <button 
+                            @click="copyLink()" 
+                            class="copy-button"
+                            :class="{ 'copied': linkCopied }"
+                        >
+                            <span x-show="!linkCopied">📋 Copier</span>
+                            <span x-show="linkCopied">✓ Copié!</span>
+                        </button>
+                    </div>
+                    <p x-show="linkCopied" class="success-message" x-transition>Lien copié dans le presse-papiers!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PWA Installation View ===== -->
+        <div x-show="currentView === 'pwa'" class="view-content" x-transition>
+            <header class="view-header">
+                <button class="back-button" @click="goBack()">‹ Retour</button>
+                <h2>Installer l'application</h2>
+            </header>
+            
+            <div class="pwa-container">
+                <!-- Chrome Android - Native Install -->
+                <div x-show="pwaStatus === 'installable'" class="pwa-section" x-transition>
+                    <div class="pwa-icon">📱</div>
+                    <h3>Installer l'application</h3>
+                    <p>Installez cette application pour un accès rapide.</p>
+                    <button @click="installPWA()" class="install-button">
+                        📥 Installer maintenant
+                    </button>
+                </div>
+                
+                <!-- Already Installed -->
+                <div x-show="pwaStatus === 'installed'" class="pwa-section pwa-success" x-transition>
+                    <div class="pwa-icon">✅</div>
+                    <h3>Application déjà installée</h3>
+                    <p>Cette application est déjà installée sur votre appareil!</p>
+                </div>
+                
+                <!-- iOS Safari Instructions -->
+                <div x-show="pwaStatus === 'ios'" class="pwa-section" x-transition>
+                    <div class="pwa-icon">🍎</div>
+                    <h3>Installation sur iOS</h3>
+                    <p>Pour installer cette application sur votre iPhone ou iPad:</p>
+                    <ol class="install-steps">
+                        <li>
+                            <strong>Appuyez sur le bouton Partager</strong>
+                            <span class="step-icon">
+                                <svg width="20" height="28" viewBox="0 0 20 28" fill="currentColor">
+                                    <path d="M14 9h3.5c.8 0 1.5.7 1.5 1.5v15c0 .8-.7 1.5-1.5 1.5h-15C1.7 27 1 26.3 1 25.5v-15C1 9.7 1.7 9 2.5 9H6V7H2.5C.6 7 0 8.6 0 10.5v15C0 27.4 1.6 29 3.5 29h15c1.9 0 3.5-1.6 3.5-3.5v-15C22 8.6 20.4 7 18.5 7H14v2zm-4-8c.6 0 1 .4 1 1v13.3l3.3-3.2c.4-.4 1-.4 1.4 0 .4.4.4 1 0 1.4l-5 5c-.4.4-1 .4-1.4 0l-5-5c-.4-.4-.4-1 0-1.4.4-.4 1-.4 1.4 0L9 15.3V2c0-.6.4-1 1-1z"/>
+                                </svg>
+                            </span>
+                            (en bas de l'écran)
+                        </li>
+                        <li>
+                            <strong>Faites défiler et appuyez sur</strong> "Sur l'écran d'accueil"
+                            <span class="step-icon">➕</span>
+                        </li>
+                        <li>
+                            <strong>Appuyez sur "Ajouter"</strong> en haut à droite
+                        </li>
+                    </ol>
+                </div>
+                
+                <!-- Other Android Browsers -->
+                <div x-show="pwaStatus === 'other-android'" class="pwa-section" x-transition>
+                    <div class="pwa-icon">🤖</div>
+                    <h3>Utiliser Google Chrome</h3>
+                    <p>Pour installer cette application, veuillez ouvrir ce site dans Google Chrome:</p>
+                    <ol class="install-steps">
+                        <li><strong>Copiez ce lien:</strong></li>
+                        <div class="inline-link" x-text="shareableUrl"></div>
+                        <li><strong>Ouvrez Google Chrome</strong></li>
+                        <li><strong>Collez le lien</strong> et accédez au site</li>
+                        <li><strong>Appuyez sur le bouton "Installer"</strong> qui apparaîtra</li>
+                    </ol>
+                    <button @click="copyLink()" class="copy-button-secondary">
+                        <span x-show="!linkCopied">📋 Copier le lien</span>
+                        <span x-show="linkCopied">✓ Copié!</span>
+                    </button>
+                </div>
+                
+                <!-- Desktop/Other -->
+                <div x-show="pwaStatus === 'desktop'" class="pwa-section" x-transition>
+                    <div class="pwa-icon">💻</div>
+                    <h3>Installation sur ordinateur</h3>
+                    <p>Pour installer cette application sur votre ordinateur:</p>
+                    <ol class="install-steps">
+                        <li><strong>Chrome:</strong> Cliquez sur l'icône ➕ dans la barre d'adresse</li>
+                        <li><strong>Edge:</strong> Cliquez sur ⚙️ → Applications → Installer ce site en tant qu'application</li>
+                    </ol>
+                </div>
             </div>
         </div>
     </div>
