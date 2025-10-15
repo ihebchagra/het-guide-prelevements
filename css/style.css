@@ -264,7 +264,7 @@ progress::-moz-progress-bar { background-color: var(--primary-color); }
 .share-container {
     max-width: 600px;
     margin: 0 auto;
-    padding: 2rem 1rem;
+    padding: 1rem;
 }
 
 .qr-code-section,
@@ -370,7 +370,7 @@ progress::-moz-progress-bar { background-color: var(--primary-color); }
 .pwa-container {
     max-width: 600px;
     margin: 0 auto;
-    padding: 2rem 1rem;
+    padding: 1rem;
 }
 
 .pwa-section {
@@ -506,4 +506,196 @@ progress::-moz-progress-bar { background-color: var(--primary-color); }
 
 .nav-card-success h3 {
     color: #28a745;
+}
+/* ===== Équipe Réalisatrice View Styles ===== */
+.equipe-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.equipe-section {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+}
+
+.section-title {
+    color: var(--primary-color);
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+/* Coordinator and Developer Cards */
+.person-card {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: var(--bg-main);
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.person-card.coordinator {
+    border-left-color: #8e24aa;
+    background: linear-gradient(135deg, #f3e5f5 0%, #fafafa 100%);
+}
+
+.person-card.developer {
+    border-left-color: #0077c2;
+    background: linear-gradient(135deg, #e3f2fd 0%, #fafafa 100%);
+}
+
+.person-icon {
+    font-size: 3rem;
+    line-height: 1;
+}
+
+.person-info {
+    flex: 1;
+}
+
+.person-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.person-role {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+/* Authors Grid */
+.authors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.author-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--bg-main);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+}
+
+.author-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-color);
+}
+
+.author-icon {
+    font-size: 1.5rem;
+    opacity: 0.7;
+}
+
+.author-card p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    line-height: 1.4;
+}
+
+/* License Section */
+.license-section {
+    background: linear-gradient(135deg, #fff8e1 0%, #ffffff 100%);
+    border: 2px solid #ffd54f;
+}
+
+.license-card p {
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.license-card strong {
+    color: var(--primary-color);
+}
+
+.license-description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.github-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: #24292e;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.github-link:hover {
+    background: #2c3338;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(36, 41, 46, 0.3);
+}
+
+.github-link svg {
+    flex-shrink: 0;
+}
+
+/* Copyright Section */
+.copyright-section {
+    background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+    border-top: 3px solid var(--primary-color);
+}
+
+.copyright-card {
+    text-align: center;
+}
+
+.copyright-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.copyright-subtext {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .equipe-section {
+        padding: 1.5rem 1rem;
+    }
+    
+    .authors-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .person-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .person-icon {
+        font-size: 2.5rem;
+    }
+    
+    .github-link {
+        width: 100%;
+        justify-content: center;
+    }
 }

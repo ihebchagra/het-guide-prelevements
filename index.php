@@ -73,7 +73,6 @@
                     <a @click.prevent="showSection('Examens hématologiques')" href="#" class="nav-card"><h3>🩸 Examens hématologiques</h3><p>Cytologie, hémostase...</p></a>
                     <a @click.prevent="showSection('Examens microbiologiques')" href="#" class="nav-card"><h3>🦠 Examens microbiologiques</h3><p>Bactériologie, virologie...</p></a>
                     <a @click.prevent="showSection('Annexes')" href="#" class="nav-card"><h3>📋 Annexes</h3><p>Fiches de renseignements...</p></a>
-                    <a href="https://drive.google.com/file/d/1RtY1SPUsOLkOZIxP5VSDtDtX3Y25VG2g/view?usp=sharing" class="nav-card"><h3>📘 Télécharger en format PDF</h3><p>Pour l'utilisation hors-ligne</p></a>
                     <a @click.prevent="navigateToView('share')" href="#" class="nav-card"><h3>🔗 Partager ce site</h3><p>Lien ou QR code</p></a>
                     <a 
                         @click.prevent="navigateToView('pwa')" 
@@ -84,6 +83,11 @@
                         <h3>📥 Télécharger l'application</h3>
                         <p>Installer hors ligne...</p>
                     </a>
+                    <a @click.prevent="navigateToView('equipe')" href="#" class="nav-card">
+                        <h3>👥 Équipe réalisatrice</h3>
+                        <p>Coordinateurs, auteurs et mentions légales</p>
+                    </a>
+                    <a href="https://drive.google.com/file/d/1RtY1SPUsOLkOZIxP5VSDtDtX3Y25VG2g/view?usp=sharing" class="nav-card"><h3>📘 Télécharger en format PDF</h3><p>Pour l'utilisation hors-ligne</p></a>
                 </nav>
             </div>
 
@@ -115,9 +119,6 @@
                 </div>
             </div>
 
-            <footer x-show="currentView === 'home' || currentView === 'search'" class="app-footer" x-transition>
-                Site web réalisé par Résident Iheb Chagra
-            </footer>
         </div>
 
         <!-- ===== Viewer View ===== -->
@@ -278,8 +279,100 @@
                 </div>
             </div>
         </div>
+        <!-- ===== Équipe Réalisatrice View ===== -->
+        <div x-show="currentView === 'equipe'" class="view-content" x-transition>
+            <header class="view-header">
+                <button class="back-button" @click="goBack()">‹ Retour</button>
+                <h2>Équipe réalisatrice</h2>
+            </header>
+            
+            <div class="equipe-container">
+                <!-- Coordinatrice Section -->
+                <div class="equipe-section">
+                    <h3 class="section-title">Coordinatrice</h3>
+                        <div class="person-info">
+                            <p class="person-name">Pr Nourelhouda Belhaj Rhouma Toumi</p>
+                        </div>
+                </div>
+
+                <!-- Auteurs Section -->
+                <div class="equipe-section">
+                    <h3 class="section-title">Liste des auteurs</h3>
+                    <div class="authors-grid">
+                        <div class="author-card">
+                            <p>Aida Bouafsoun</p>
+                        </div>
+                        <div class="author-card">
+                            <p>Hager Zarrouk</p>
+                        </div>
+                        <div class="author-card">
+                            <p>Hamida Jouini</p>
+                        </div>
+                        <div class="author-card">
+                            <p>Hanen Smaoui</p>
+                        </div>
+                        <div class="author-card">
+                            <p>Khaoula Meftah</p>
+                        </div>
+                        <div class="author-card">
+                            <p>Mariem Othmeni</p>
+                        </div>
+                        <div class="author-card">
+                            <p>Nourelhouda Belhaj Rhouma Toumi</p>
+                        </div>
+                        <div class="author-card">
+                            <p>Rym Dabboubi</p>
+                        </div>
+                        <div class="author-card">
+                            <p>Sirine Ben Hmida</p>
+                        </div>
+                        <div class="author-card">
+                            <p>Siwar Chelbi</p>
+                        </div>
+                        <div class="author-card">
+                            <p>Taieb Ben Messaoud</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Réalisateur du site web -->
+                <div class="equipe-section">
+                    <h3 class="section-title">Réalisateur du site web</h3>
+                        <div class="person-info">
+                            <p class="person-name">Résident Iheb Chagra</p>
+                        </div>
+                </div>
+
+                <!-- License Section -->
+                <div class="equipe-section license-section">
+                    <h3 class="section-title">Licence du site web</h3>
+                    <div class="license-card">
+                        <p>Ce site web est distribué sous licence <strong>GNU General Public License v3.0</strong></p>
+                        <p class="license-description">
+                            Vous êtes libre de partager et de modifier ce code source selon les termes de la licence GPL v3.
+                        </p>
+                        <a 
+                            href="https://github.com/ihebchagra/het-guide-prelevements" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            class="github-link"
+                        >
+                            <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                            </svg>
+                            Voir le code source sur GitHub
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer x-show="currentView !== 'viewer'" class="app-footer" x-transition>
+                © <span x-text="new Date().getFullYear()"></span> Hôpital d'Enfants Béchir Hamza de Tunis
+        </footer>
     </div>
 </div>
+
 
 <script src="js/test-data.js?v=<?php echo $version; ?>"></script>
 <script src="js/app.js?v=<?php echo $version; ?>"></script>
